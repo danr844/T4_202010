@@ -2,7 +2,6 @@ package test.logic;
 
 import static org.junit.Assert.*;
 
-import model.data_structures.ArregloDinamico;
 import model.data_structures.Comparendo;
 import model.data_structures.Node;
 import model.logic.Modelo;

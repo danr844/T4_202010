@@ -29,9 +29,6 @@ public class Modelo
 	/**
 	 * Atributos del modelo del mundo
 	 */
-	private ArregloDinamico<Comparendo> datos;
-	private int numeroNodos;
-	private Ordenamientos ordenar;
 
 	
 
@@ -41,7 +38,6 @@ public class Modelo
 	 */
 	public Modelo(int capacidad)
 	{
-		datos = new ArregloDinamico<Comparendo>(capacidad);
 
 	}
 	public static  boolean   less(Comparendo a, Comparendo a2)  
