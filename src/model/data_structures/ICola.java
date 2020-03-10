@@ -4,7 +4,7 @@ public interface ICola <T>{
 
 	public void enqueue(T multa);
 
-	public T dequeue();
+	public T sacarMax();
 
 	public boolean estavacia();
 

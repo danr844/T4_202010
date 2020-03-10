@@ -22,7 +22,7 @@ public class Cola<T> implements ICola<T>
 	}
 
 
-	public void enqueue(T multa)
+	public void agregar(T multa)
 	{
 		Node<T> nuevo = new Node<>();
 		nuevo.cambiarDato(multa);
@@ -45,27 +45,15 @@ public class Cola<T> implements ICola<T>
 			tamanoCola++;
 		}
 	}
-	public T dequeue()
+	public T sacarMax()
 	{
-		if(!estavacia())
-		{
-			Node<T> valorEliminado = inicioCola;
-			if(inicioCola.darSiguiente()!=null)
-			{
-				inicioCola = inicioCola.darSiguiente();
-				tamanoCola--;
-			}
-			else
-			{
-				inicioCola= null;
-				tamanoCola = 0;
-			}
-			return valorEliminado.darTvalor();
-		}
-		else
-		{
-			return null;
-		}
+		int max = 0;
+		for (int i = 1; i < tamanoCola; i++)
+			if (less(max, i)) // Recorre el arreglo buscando el máximo 
+				max = i; 
+			exch(max, N-1); // Intercambia el máximo por el último.
+		return pq[--N]; // Retorna el último (máximo) y decrementa tamaNo }
+
 	}
 
 	public int dartamanoCola(){
@@ -76,6 +64,10 @@ public class Cola<T> implements ICola<T>
 	public Node<T> darPrimerElemento()
 	{
 		return inicioCola;
+	}
+	public T darMax()
+	{
+
 	}
 
 }
