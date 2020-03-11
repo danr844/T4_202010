@@ -30,11 +30,6 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 		elementos =   (T[]) new Comparable[max];
 		tamanoMax = max;
 		tamanoAct = 0;
-		int x=0;
-		System.out.println(x++);
-		System.out.println(++x);
-		System.out.println(x--);
-		System.out.println(--x);
 
 		
 	}
@@ -61,6 +56,9 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 
 	public int darTamano() {
 		return tamanoAct;
+	}
+	public void aumentarTamano(){
+		
 	}
 	public boolean estaVacio()
 	{
