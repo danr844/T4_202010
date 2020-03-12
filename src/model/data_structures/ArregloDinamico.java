@@ -33,7 +33,7 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 		tamanoMax = max;
 		tamanoAct = 0;
 
-		
+
 	}
 
 	public void agregar( T dato )
@@ -60,11 +60,11 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 		return tamanoAct;
 	}
 	public void aumentarTamano(){
-		
+
 		tamanoAct++;
 	}
 	public void disminuirTamano(){
-		
+
 		tamanoAct--;
 	}
 	public boolean estaVacio()
@@ -100,12 +100,12 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 		elementos[i] = elementos[j]; 
 		elementos[j] = t; 
 	}
-	
+
 	public   boolean   less(T v, T w, Comparator comparador)  
 	{  
 		return comparador.compare(v, w)<0;  
 	}  
-	
+
 	public void cambiarElementoEnPosicion(int i, T k){
 		elementos[i] = k;
 	}

@@ -12,7 +12,7 @@ public class Comparendo implements Comparable<Comparendo> {
 	private Comparendo siguiente;
 	private Double latitud;
 	private Double longitud;
-	
+
 
 
 
@@ -77,7 +77,7 @@ public class Comparendo implements Comparable<Comparendo> {
 		String[] ArrefechaThat = pComparendo.darFecha().trim().split("/");
 		String fechaThat = ArrefechaThat[0]+ArrefechaThat[1]+ArrefechaThat[2];
 
-		
+
 		if(Integer.parseInt(fechaThis)< Integer.parseInt(fechaThat))return -1;
 		else if (Integer.parseInt(fechaThis)> Integer.parseInt(fechaThat))return 1;
 		else{

@@ -2,11 +2,8 @@ package controller;
 
 import java.util.Scanner;
 
-import com.sun.glass.events.ViewEvent;
 
-import model.data_structures.ArregloDinamico;
 import model.data_structures.Comparendo;
-import model.data_structures.Node;
 import model.logic.Modelo;
 import view.View;
 
@@ -25,7 +22,7 @@ public class Controller {
 	public Controller ()
 	{
 		view = new View();
-		modelo = new Modelo(10000);
+		modelo = new Modelo();
 	}
 
 	public void run() 
@@ -41,113 +38,73 @@ public class Controller {
 			switch(option)
 			{
 			case 1:
-				view.printMessage("------------------------------------------------------------------------\n Se esta cargando la informacion \n------------------------------------------------------------------------");
-				modelo.cargarInfo();
-				if(modelo.darTamano()!=0)
-				{
-					Comparendo encontrado = modelo.dardatos().darElemento(0);
-					view.printMessage(""+ encontrado.darID()+","+encontrado.darFecha()+","+ encontrado.darClaseVehiculo()+","+encontrado.darTipoServicio()+","+encontrado.darLocalidad()+"\n---------------------------");
-					encontrado=modelo.dardatos().darElemento(modelo.darTamano()-1);
-					view.printMessage(""+ encontrado.darID()+","+encontrado.darFecha()+","+ encontrado.darClaseVehiculo()+","+encontrado.darTipoServicio()+","+encontrado.darLocalidad()+"\n---------------------------");
-					view.printMessage("Total de comparendos leidos: "+modelo.darTamano()+"");
-					view.printMessage("------------------------------------------------------------------------");
+				view.printMessage("------------------------------------------------------------------\n Ingrese el numero de comparendos que desea agregar a la MaxCola y MaxHeap \n------------------------------------------------------------------------");
+				int num = lector.nextInt();
+				int time = modelo.cargarInfo(num);
 
-				}
+				view.printMessage("Total de comparendos leidos: "+modelo.darArreglo().darTamano()+"");
+				view.printMessage("Tiempo de carga datos alaeatorios en MaxCola y MaxHeap: "+time+" milisegundos.");
+
+				view.printMessage("------------------------------------------------------------------------");
+
+
 				break;
 
 			case 2:
-				view.printMessage("------------------------------------------------------------------------\n Se esta copiando el arreglo: \n------------------------------------------------------------------------");
-				ArregloDinamico<Comparendo> copiados=modelo.copiarComparendos();
-				int numeroDeDatosCargados=copiados.darTamano();
-				view.printMessage("Numero de datos de cargados:"+numeroDeDatosCargados +"\n---------------------------");
+				view.printMessage("------------------------------------------------------------------------\n Digite el numero de comparendos que desea conocer: \n------------------------------------------------------------------------");
+				int num1 = lector.nextInt();
+				view.printMessage("------------------------------------------------------------------------\n Digite el primer vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo1Cola = lector.nextLine();
+				view.printMessage("------------------------------------------------------------------------\n Digite el segundo vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo1Cola1 = lector.nextLine();
+				view.printMessage("------------------------------------------------------------------------\n Digite el tercer vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo1Cola2 = lector.nextLine();
+				int index2=0;
+				Long start = System.currentTimeMillis();
+
+				while(index2<num1)
+				{
+					Comparendo datogg= modelo.eliminarMaxCola();
+					if(datogg!=null)
+					{
+						if(datogg.darClaseVehiculo().equals(vehiculo1Cola)||datogg.darClaseVehiculo().equals(vehiculo1Cola1)||datogg.darClaseVehiculo().equals(vehiculo1Cola2)){
+							view.printMessage("El ID del vehiculo es: "+ datogg.darID()+ ", el tipo de vehiculo es: "+ datogg.darClaseVehiculo()+ ", la latitud y longitud son: "+ datogg.darLatitud()+","+datogg.darLongitud());
+						}
+					}
+					index2++;
+				}
+				Long finish = System.currentTimeMillis();
+				view.printMessage("El requerimiento duro: "+ (int)(finish-start)+" milisegundos");
+
 
 				break;
 			case 3:
-				view.printMessage("------------------------------------------------------------------------\n Se esta ordenando el arreglo: \n------------------------------------------------------------------------");
-				// Copiar los comparendos originales en un arreglo de objetos Comparables – Requerimiento 1
-				ArregloDinamico<Comparendo>copia_Comparendos  = modelo.copiarComparendos();
-				long startTime = System.currentTimeMillis(); // medición tiempo actual
-				// solucion Requerimiento 2, 3 o 4
-				modelo.ordenarShellSort( copia_Comparendos );
-				long endTime = System.currentTimeMillis(); // medición tiempo actual
-				long duration = endTime - startTime; // duracion de ejecucion del algoritmo
-				view.printMessage("Tiempo de ordenamiento: " + duration + " milisegundos");
-				view.printMessage("------------------------------------------------------------------------\n Primeros 10 elementos: \n------------------------------------------------------------------------");
+				view.printMessage("------------------------------------------------------------------------\n Digite el numero de comparendos que desea conocer: \n------------------------------------------------------------------------");
+				int num2 = lector.nextInt();
+				view.printMessage("------------------------------------------------------------------------\n Digite el primer vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo2heap = lector.nextLine();
+				view.printMessage("------------------------------------------------------------------------\n Digite el segundo vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo2heap1 = lector.nextLine();
+				view.printMessage("------------------------------------------------------------------------\n Digite el tercer vehiculo que desea conocer los comparendos: \n------------------------------------------------------------------------");
+				String vehiculo2heap2 = lector.nextLine();
+				int index3=0;
+				Long start1 = System.currentTimeMillis();
 
-				for(int i=0; i<10; i++)
+				while(index3<num2)
 				{
-					Comparendo actual=copia_Comparendos.darElemento(i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
+					Comparendo datogg= modelo.eliminarMaxCola();
+					if(datogg!=null)
+					{
+						if(datogg.darClaseVehiculo().equals(vehiculo2heap)||datogg.darClaseVehiculo().equals(vehiculo2heap1)||datogg.darClaseVehiculo().equals(vehiculo2heap2)){
+							view.printMessage("El ID del vehiculo es: "+ datogg.darID()+ ", el tipo de vehiculo es: "+ datogg.darClaseVehiculo()+ ", la latitud y longitud son: "+ datogg.darLatitud()+","+datogg.darLongitud());
+						}
+					}
+					index3++;
 				}
-				view.printMessage("------------------------------------------------------------------------\n Ultimos 10 elementos: \n------------------------------------------------------------------------");
+				Long finish2 = System.currentTimeMillis();
+				view.printMessage("El requerimiento duro: "+ (int)(finish2-start1)+" milisegundos");
 
-				for(int i=1; i<11; i++)
-				{
-					Comparendo actual=copia_Comparendos.darElemento(copia_Comparendos.darTamano()-i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
-				}
-				// mostrar los resultados del algoritmo xxxxxSort que quedaron en el arreglo
-				// copia_Comparendos: los 10 primeros y los 10 últimos comparendos resultantes
-				view.printMessage("------------------------------------------------------------------------");
 
-				break;
-
-			case 4:
-
-				view.printMessage("------------------------------------------------------------------------\n Se esta ordenando el arreglo: \n------------------------------------------------------------------------");
-				ArregloDinamico<Comparendo>copia_Comparendos_Merge  = modelo.copiarComparendos();
-				long startTime1 = System.currentTimeMillis(); 
-				modelo.ordenarPorMergeSort(copia_Comparendos_Merge, 0, modelo.copiarComparendos().darTamano()-1);
-				long endTime1 = System.currentTimeMillis(); // medición tiempo actual
-				long duration1 = endTime1 - startTime1; // duracion de ejecucion del algoritmo
-				view.printMessage("Tiempo de ordenamiento: " + duration1 + " milisegundos");
-
-				view.printMessage("------------------------------------------------------------------------\n Primeros 10 elementos: \n------------------------------------------------------------------------");
-
-				for(int i=0; i<10; i++)
-				{
-					Comparendo actual=copia_Comparendos_Merge.darElemento(i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
-				}
-				view.printMessage("------------------------------------------------------------------------\n Ultimos 10 elementos: \n------------------------------------------------------------------------");
-
-				for(int i=1; i<11; i++)
-				{
-					Comparendo actual=copia_Comparendos_Merge.darElemento(copia_Comparendos_Merge.darTamano()-i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
-				}
-				// mostrar los resultados del algoritmo xxxxxSort que quedaron en el arreglo
-				// copia_Comparendos: los 10 primeros y los 10 últimos comparendos resultantes
-				view.printMessage("------------------------------------------------------------------------");
-				break;
-
-			case 5:
-				
-				view.printMessage("------------------------------------------------------------------------\n Se esta ordenando el arreglo: \n------------------------------------------------------------------------");
-				ArregloDinamico<Comparendo>copia_Comparendos_Quick  = modelo.copiarComparendos();
-				long startTime2 = System.currentTimeMillis(); 
-				modelo.ordenarPorQuick(copia_Comparendos_Quick);
-				long endTime2 = System.currentTimeMillis(); // medición tiempo actual
-				long duration2 = endTime2 - startTime2; // duracion de ejecucion del algoritmo
-				view.printMessage("Tiempo de ordenamiento: " + duration2 + " milisegundos");
-
-				view.printMessage("------------------------------------------------------------------------\n Primeros 10 elementos: \n------------------------------------------------------------------------");
-
-				for(int i=0; i<10; i++)
-				{
-					Comparendo actual=copia_Comparendos_Quick.darElemento(i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
-				}
-				view.printMessage("------------------------------------------------------------------------\n Ultimos 10 elementos: \n------------------------------------------------------------------------");
-
-				for(int i=1; i<11; i++)
-				{
-					Comparendo actual=copia_Comparendos_Quick.darElemento(copia_Comparendos_Quick.darTamano()-i);
-					view.printMessage(""+ actual.darID()+","+actual.darFecha()+","+ actual.darClaseVehiculo()+","+actual.darTipoServicio()+","+actual.darLocalidad()+"\n---------------------------");
-				}
-				// mostrar los resultados del algoritmo xxxxxSort que quedaron en el arreglo
-				// copia_Comparendos: los 10 primeros y los 10 últimos comparendos resultantes
-				view.printMessage("------------------------------------------------------------------------");
 				break;
 
 			default: 

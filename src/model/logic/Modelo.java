@@ -16,12 +16,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import model.data_structures.ArregloDinamico;
-import model.data_structures.IArregloDinamico;
 import model.data_structures.MaxColaCP;
 import model.data_structures.MaxHeapCP;
 import model.data_structures.Comparendo;
-import model.data_structures.Node;
-import model.data_structures.Ordenamientos; 
 
 /**
  * Definicion del modelo del mundo
@@ -47,11 +44,11 @@ public class Modelo
 		heap= new MaxHeapCP<Comparendo>();
 		array = new ArregloDinamico<Comparendo>(10000);
 	}
-  
 
 
-	public void cargarInfo(int NumeroDatos){
 
+	public int cargarInfo(int NumeroDatos){
+		int res =0;
 		try {
 
 			Gson gson = new Gson();
@@ -77,12 +74,14 @@ public class Modelo
 
 				if(e.getAsJsonObject().has("geometry") && !e.getAsJsonObject().get("geometry").isJsonNull())
 				{
-					double Latitud  = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsDouble();
-					double longitud =e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsDouble();
-					 user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, Latitud, longitud);
+					String[] coordenadas  = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsString().split(",");
+					double Latitud =Double.parseDouble(coordenadas[0]);
+					double longitud =Double.parseDouble(coordenadas[1]);
+
+					user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, Latitud, longitud);
 				}
 				else {
-					 user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, 0, 0);
+					user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, 0, 0);
 				}
 				array.agregar(user);
 
@@ -90,6 +89,7 @@ public class Modelo
 
 			System.out.println(Arrays.toString(lista.toArray()));
 			int k=0;
+			Long start = System.currentTimeMillis();
 			while(k<20000){
 				int index = (int) Math.random();
 				Comparendo user = array.darElemento(index);
@@ -97,11 +97,13 @@ public class Modelo
 				agregarMaxHeap(user);
 				k++;
 			}
-			
+			Long finish = System.currentTimeMillis();
+			res = (int) (finish - start);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return res;
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class Modelo
 	{
 		return  (Comparendo) heap.deleteMax(comparendo, darComparadorLatitud());
 	}
-	
+
 	public void agregarMaxCola(Comparendo comparendo){
 		maxCola.agregar(comparendo);
 	}
@@ -140,26 +142,35 @@ public class Modelo
 	{
 		return heap.darNumElementos();
 	}
+	public MaxColaCP<Comparendo> darMaxCola(){
+		return maxCola;
+	}
+	public MaxHeapCP<Comparendo> darMaxHeap(){
+		return heap;
+	}
+	public ArregloDinamico<Comparendo> darArreglo(){
+		return array;
+	}
 
 
-	
+
 	public Comparator<Comparendo> darComparadorLatitud(){
 
 
-			Comparator<Comparendo> ID = new Comparator<Comparendo>()
+		Comparator<Comparendo> ID = new Comparator<Comparendo>()
+		{
+			@Override
+			public int compare(Comparendo o1, Comparendo o2) 
 			{
-				@Override
-				public int compare(Comparendo o1, Comparendo o2) 
-				{
-					if(o1.darLatitud()<o2.darLatitud())return -1;
-					else if (o1.darID()>o2.darID())
-						return 1;
-					return 0;	
-				}
-			};
-			return ID;
-		}
-		
+				if(o1.darLatitud()<o2.darLatitud())return -1;
+				else if (o1.darID()>o2.darID())
+					return 1;
+				return 0;	
+			}
+		};
+		return ID;
+	}
+
 	/**
 	 * Requerimiento buscar dato
 	 * @param dato Dato a buscar
