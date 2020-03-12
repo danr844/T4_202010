@@ -10,10 +10,13 @@ public class Comparendo implements Comparable<Comparendo> {
 	private String DESC_INFRACCION;
 	private String MEDIO;
 	private Comparendo siguiente;
+	private Double latitud;
+	private Double longitud;
+	
 
 
 
-	public Comparendo (int pOBJECT_ID, String pFECHA_HORA, String pMedioDeteccion, String pClasevehiculo,String pTIPO_SERVICIO, String pInfraccion, String pDescInfraccion,  String pLOCALIDAD)
+	public Comparendo (int pOBJECT_ID, String pFECHA_HORA, String pMedioDeteccion, String pClasevehiculo,String pTIPO_SERVICIO, String pInfraccion, String pDescInfraccion,  String pLOCALIDAD, double pLatitud, double pLongitud )
 	{
 		OBJECT_ID = pOBJECT_ID;
 		FECHA_HORA= pFECHA_HORA;
@@ -23,6 +26,8 @@ public class Comparendo implements Comparable<Comparendo> {
 		TIPO_SERVICIO=pTIPO_SERVICIO;
 		LOCALIDAD= pLOCALIDAD;
 		DESC_INFRACCION = pDescInfraccion;
+		latitud =  pLatitud;
+		longitud =pLongitud;
 
 	}
 	public Comparendo darSiguiente()
@@ -57,6 +62,12 @@ public class Comparendo implements Comparable<Comparendo> {
 	}
 	public String darDescInfo(){
 		return DESC_INFRACCION;
+	}
+	public double darLatitud(){
+		return latitud;
+	}
+	public double darLongitud(){
+		return longitud;
 	}
 	@Override
 	public int compareTo(Comparendo pComparendo) {

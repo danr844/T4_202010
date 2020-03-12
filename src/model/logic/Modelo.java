@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -16,6 +17,8 @@ import com.google.gson.stream.JsonReader;
 
 import model.data_structures.ArregloDinamico;
 import model.data_structures.IArregloDinamico;
+import model.data_structures.MaxColaCP;
+import model.data_structures.MaxHeapCP;
 import model.data_structures.Comparendo;
 import model.data_structures.Node;
 import model.data_structures.Ordenamientos; 
@@ -29,25 +32,25 @@ public class Modelo
 	/**
 	 * Atributos del modelo del mundo
 	 */
+	private MaxColaCP<Comparendo> maxCola;
+	private MaxHeapCP<Comparendo> heap;
+	private ArregloDinamico<Comparendo>array;
 
-	
 
 	/**
 	 * Constructor del modelo del mundo con capacidad dada
 	 * @param tamano
 	 */
-	public Modelo(int capacidad)
+	public Modelo()
 	{
-
+		maxCola = new MaxColaCP<Comparendo>();
+		heap= new MaxHeapCP<Comparendo>();
+		array = new ArregloDinamico<Comparendo>(10000);
 	}
-	public static  boolean   less(Comparendo a, Comparendo a2)  
-	{  
-		return Ordenamientos.less(a, a2); 
-	}   
+  
 
 
-	public List<Double> cargarInfo(){
-		List<Double> geo = new ArrayList<Double>();
+	public void cargarInfo(int NumeroDatos){
 
 		try {
 
@@ -70,25 +73,35 @@ public class Modelo
 				String Infraccion =e.getAsJsonObject().get("properties").getAsJsonObject().get("INFRACCION").getAsString();
 				String DescInfra=e.getAsJsonObject().get("properties").getAsJsonObject().get("DES_INFRAC").getAsString();
 				String Localidad = e.getAsJsonObject().get("properties").getAsJsonObject().get("LOCALIDAD").getAsString();
+				Comparendo user = new Comparendo(0,null, null, null, null, null, null, null, 0, 0);
 
-
-				Comparendo user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad );
-				datos.agregar(user);
-				
-				if(e.getAsJsonObject().has("geometry") && !e.getAsJsonObject().get("geometry").isJsonNull()) {
-					for(JsonElement geoElem: e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()) {
-						geo.add(geoElem.getAsDouble());
-
-					}
+				if(e.getAsJsonObject().has("geometry") && !e.getAsJsonObject().get("geometry").isJsonNull())
+				{
+					double Latitud  = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsDouble();
+					double longitud =e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsDouble();
+					 user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, Latitud, longitud);
 				}
-			}
-			System.out.println(Arrays.toString(lista.toArray()));
+				else {
+					 user = new Comparendo(id,fecha, medio, Clasevehi, tipoServicio, Infraccion, DescInfra, Localidad, 0, 0);
+				}
+				array.agregar(user);
 
+			}
+
+			System.out.println(Arrays.toString(lista.toArray()));
+			int k=0;
+			while(k<20000){
+				int index = (int) Math.random();
+				Comparendo user = array.darElemento(index);
+				agregarMaxCola(user);
+				agregarMaxHeap(user);
+				k++;
+			}
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return geo;
 	}
 
 	/**
@@ -96,37 +109,22 @@ public class Modelo
 	 * @param object Dato a eliminar
 	 * @return dato eliminado
 	 */
-	public Comparendo eliminar(Comparendo object)
+	public Comparendo eliminarMaxCola()
 	{
-		return  datos.eliminar(object);
+		return  (Comparendo) maxCola.deleteMax(darComparadorLatitud());
 	}
-	public IArregloDinamico<Comparendo> dardatos(){
-		return datos;
-	}
-	public void agregarArregloDinamico(Comparendo comparendo){
-		datos.agregar(comparendo);
-	}
-	public void ordenarShellSort(ArregloDinamico<Comparendo> datos)
+	public Comparendo eliminarMaxHeap(Comparendo comparendo)
 	{
-		// Sort a[] into increasing order.   
-		Ordenamientos.ShellSort(datos.darElementos());
+		return  (Comparendo) heap.deleteMax(comparendo, darComparadorLatitud());
 	}
-	public  void ordenarPorMergeSort(ArregloDinamico<Comparendo> a, int lo, int hi) 
-	{  // Merge a[lo..mid] with a[mid+1..hi].
-		Ordenamientos.sortMerge(a.darElementos(), lo, hi);
+	
+	public void agregarMaxCola(Comparendo comparendo){
+		maxCola.agregar(comparendo);
 	}
-	public void ordenarPorQuick(ArregloDinamico<Comparendo> datos)
-	{
-		Ordenamientos.Quicksort(datos.darElementos());
+	public void agregarMaxHeap(Comparendo comparendo){
+		heap.agregar(comparendo, darComparadorLatitud());
 	}
-	public ArregloDinamico<Comparendo> copiarComparendos(){
-		ArregloDinamico<Comparendo> arreglonuevo = new ArregloDinamico<>(datos.darTamano());
-		for(int i = 0; i<datos.darTamano(); i++)
-		{
-			arreglonuevo.agregar(datos.darElemento(i));
-		}
-		return arreglonuevo;
-	}
+
 
 
 
@@ -134,69 +132,40 @@ public class Modelo
 	 * Servicio de consulta de numero de elementos presentes en el modelo 
 	 * @return numero de elementos presentes en el modelo
 	 */
-	public int darTamano()
+	public int darTamanoCola()
 	{
-		return datos.darTamano();
+		return maxCola.darNumElementos();
 	}
-	public ArregloDinamico<Comparendo> darArreglo(){
-			return datos;
+	public int darTamanoHeap()
+	{
+		return heap.darNumElementos();
 	}
 
-//	public int darNumeroNodos(){
-//		return numeroNodos;
-//	}
 
-//	public Node<Comparendo> darUltimoNodo(){
-//		return ultimo;
-//	}
-//	
-	/**
-	 * Requerimiento de agregar dato
-	 * @param <T>
-	 * @param dato
-	 */
-	//	public <T> void agregar(Comparendo dato)
-	//	{	
-	//		if(primero== null){
-	//			primero  = new Node <Comparendo>();
-	//			primero.cambiarDato(dato);
-	//			numeroNodos++;
-	//			ultimo = primero;
-	//		}
-	//		else{
-	//			Node<Comparendo> nodo= new Node<Comparendo>();
-	//			nodo.cambiarDato(dato);
-	//			ultimo.cambiarSiguiente(nodo);
-	//			ultimo = nodo;
-	//			numeroNodos++;
-	//		
-	//		}
-	//			
-	//	}
-	//	public Node<Comparendo> darPrimero(){
-	//	return primero;
-	//}
+	
+	public Comparator<Comparendo> darComparadorLatitud(){
+
+
+			Comparator<Comparendo> ID = new Comparator<Comparendo>()
+			{
+				@Override
+				public int compare(Comparendo o1, Comparendo o2) 
+				{
+					if(o1.darLatitud()<o2.darLatitud())return -1;
+					else if (o1.darID()>o2.darID())
+						return 1;
+					return 0;	
+				}
+			};
+			return ID;
+		}
+		
 	/**
 	 * Requerimiento buscar dato
 	 * @param dato Dato a buscar
 	 * @return dato encontrado
 	 */
-	public Comparendo buscar(int datoID)
-	{
-		int i = 0;
-		Comparendo actual=datos.darElemento(i);
-
-		while(datos.darElemento(i)!=null)
-		{
-			 actual=datos.darElemento(i);
-			if(actual.darID() == datoID )
-				return actual;
-			++i;
-
-		}
-		return null;
-		}
-	}
+}
 
 
 

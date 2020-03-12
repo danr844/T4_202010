@@ -1,5 +1,7 @@
 package model.data_structures;
 
+import java.util.Comparator;
+
 /**
  * 2019-01-23
  * Estructura de Datos Arreglo Dinamico de Strings.
@@ -59,6 +61,11 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 	}
 	public void aumentarTamano(){
 		
+		tamanoAct++;
+	}
+	public void disminuirTamano(){
+		
+		tamanoAct--;
 	}
 	public boolean estaVacio()
 	{
@@ -93,6 +100,12 @@ public class ArregloDinamico <T extends Comparable<T>> implements IArregloDinami
 		elementos[i] = elementos[j]; 
 		elementos[j] = t; 
 	}
+	
+	public   boolean   less(T v, T w, Comparator comparador)  
+	{  
+		return comparador.compare(v, w)<0;  
+	}  
+	
 	public void cambiarElementoEnPosicion(int i, T k){
 		elementos[i] = k;
 	}
