@@ -19,9 +19,9 @@ public class TestModelo {
 	
 	@Before
 	public void setUp1() {
-		modelo= new Modelo(15);
-		nueva = new Comparendo(1234, "hola1", "hola2", "hola3", "hola4", "hola5", "hola", "hola7");
-		nueva2 = new Comparendo(0000, "0000", "0009", "0008", "0007", "0006", "0005", "0004");
+		modelo= new Modelo();
+		nueva = new Comparendo(1234, "hola1", "hola2", "hola3", "hola4", "hola5", "hola", "hola7", 0, 0);
+		nueva2 = new Comparendo(0000, "0000", "0009", "0008", "0007", "0006", "0005", "0004", 0, 0);
 		modelo.agregarArregloDinamico(nueva);
 		modelo.agregarArregloDinamico(nueva2);
 		
